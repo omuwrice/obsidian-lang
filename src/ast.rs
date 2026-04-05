@@ -18,6 +18,7 @@ impl SourcePosition {
 }
 
 /// Unary built-in operations (single operand).
+#[allow(dead_code)]
 #[derive(Debug, Clone, PartialEq)]
 pub enum BuiltInUnaryOp {
     // Text operations
@@ -201,6 +202,7 @@ pub enum Node {
         catch_body: Vec<Node>,
     },
     /// Return value from a node (used internally for control flow)
+    #[allow(dead_code)]
     ReturnVal(Box<Node>),
     /// Test block: test "name" ... end
     TestBlock {

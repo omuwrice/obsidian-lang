@@ -1,5 +1,5 @@
 use super::*;
-use crate::ast::{Node, BuiltInUnaryOp, BuiltInBinaryOp, BuiltInTernaryOp, BuiltInNullaryOp};
+use crate::ast::{Node, BuiltInUnaryOp, BuiltInBinaryOp, BuiltInNullaryOp};
 use crate::lexer::Lexer;
 
 /// Helper function to parse a source string and return the AST.

@@ -12,7 +12,7 @@ use std::rc::Rc;
 // ============================================================================
 
 /// Control flow signal for loop execution (break/continue).
-#[derive(Debug, Clone, PartialEq)]
+#[allow(dead_code)]
 enum LoopControl {
     None,
     Break,
