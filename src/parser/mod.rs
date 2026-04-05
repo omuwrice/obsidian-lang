@@ -264,7 +264,10 @@ impl Parser {
                 self.advance();
             }
         }
-        let value = self.parse_expression()?;
+
+        // Parse the value expression, handling `funcname with args` as a function call
+        let value = self.parse_expression_with_call()?;
+
         Ok(Node::Set {
             name,
             value: Box::new(value),
@@ -275,7 +278,7 @@ impl Parser {
     /// Parse: show <expression>
     fn parse_show(&mut self) -> Result<Node, ParseError> {
         self.expect_keyword("show")?;
-        let expr = self.parse_expression()?;
+        let expr = self.parse_expression_with_call()?;
         Ok(Node::Show(Box::new(expr)))
     }
 
@@ -525,7 +528,7 @@ impl Parser {
     /// Parse: return <expression>
     fn parse_return(&mut self) -> Result<Node, ParseError> {
         self.expect_keyword("return")?;
-        let expr = self.parse_expression()?;
+        let expr = self.parse_expression_with_call()?;
         Ok(Node::Return(Box::new(expr)))
     }
 
@@ -634,6 +637,37 @@ impl Parser {
     /// Parse an expression with operator precedence.
     /// Handles: or, and, comparison, term, factor, unary, primary
     fn parse_expression(&mut self) -> Result<Node, ParseError> {
+        self.parse_or()
+    }
+
+    /// Parse an expression that may start with `identifier with args` as a function call.
+    /// This is used at statement level (show, return, set x to, etc.) where the expression
+    /// starts fresh and an identifier followed by 'with' should be treated as a function call.
+    fn parse_expression_with_call(&mut self) -> Result<Node, ParseError> {
+        // Check if the expression starts with `identifier with args`
+        if let Token::Identifier(_) = self.peek() {
+            let is_func_with = self.position + 1 < self.tokens.len()
+                && matches!(&self.tokens[self.position + 1], Token::Keyword(k) if k == "with");
+            if is_func_with {
+                let Token::Identifier(func_name)  = self.peek() else {
+                    unreachable!()
+                };
+                let func_name = func_name.clone();
+                self.advance(); // consume identifier
+                self.advance(); // consume 'with'
+                let mut args = Vec::new();
+                args.push(self.parse_expression()?);
+                while let Token::Comma = self.peek() {
+                    self.advance();
+                    args.push(self.parse_expression()?);
+                }
+                return Ok(Node::Call {
+                    name: func_name,
+                    args,
+                });
+            }
+        }
+        // Fall through to normal expression parsing
         self.parse_or()
     }
 

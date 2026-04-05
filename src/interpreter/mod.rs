@@ -622,7 +622,41 @@ impl Interpreter {
                     match part {
                         crate::ast::InterpPart::Lit(s) => result.push_str(s),
                         crate::ast::InterpPart::Var(var_name) => {
-                            let val = self.environment.borrow().get(var_name)?;
+                            // Support dot-notation field access: "person.name" or "person.address.city"
+                            let mut parts_iter = var_name.split('.');
+                            let base_name = match parts_iter.next() {
+                                Some(n) => n,
+                                None => {
+                                    return Err(ObsidianError::RuntimeError {
+                                        message: "Empty variable name in interpolation".to_string(),
+                                    });
+                                }
+                            };
+                            let mut val = self.environment.borrow().get(base_name)?;
+                            for field in parts_iter {
+                                match val {
+                                    Value::Dict(entries) => {
+                                        if let Some(v) = entries.get(field) {
+                                            val = v.clone();
+                                        } else {
+                                            return Err(ObsidianError::RuntimeError {
+                                                message: format!(
+                                                    "I couldn't find a field named '{}' in the dictionary",
+                                                    field
+                                                ),
+                                            });
+                                        }
+                                    }
+                                    _ => {
+                                        return Err(ObsidianError::TypeMismatch {
+                                            message: format!(
+                                                "I expected a dictionary, but got {}",
+                                                value_type_name(&val)
+                                            ),
+                                        });
+                                    }
+                                }
+                            }
                             result.push_str(&val.to_string());
                         }
                     }
@@ -1577,6 +1611,60 @@ pos: None,
         assert!(result.is_ok());
     }
 
+    // ---- Function Call in Expression Tests ----
+
+    #[test]
+    fn test_show_with_function_call() {
+        // Test: show funcname with arg (the main bug fix)
+        let program = Node::Program(vec![
+            Node::Define {
+                name: "double".to_string(),
+                params: vec!["x".to_string()],
+                body: vec![Node::Return(Box::new(Node::BinaryOp {
+                    left: Box::new(Node::Identifier("x".to_string())),
+                    op: "*".to_string(),
+                    right: Box::new(Node::NumberLit(2.0)),
+                }))],
+            },
+            Node::Show(Box::new(Node::Call {
+                name: "double".to_string(),
+                args: vec![Node::NumberLit(21.0)],
+            })),
+        ]);
+        let result = run_program(program);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_return_with_function_call() {
+        // Test: return funcname with arg
+        let program = Node::Program(vec![
+            Node::Define {
+                name: "add1".to_string(),
+                params: vec!["x".to_string()],
+                body: vec![Node::Return(Box::new(Node::BinaryOp {
+                    left: Box::new(Node::Identifier("x".to_string())),
+                    op: "+".to_string(),
+                    right: Box::new(Node::NumberLit(1.0)),
+                }))],
+            },
+            Node::Define {
+                name: "wrapper".to_string(),
+                params: vec!["y".to_string()],
+                body: vec![Node::Return(Box::new(Node::Call {
+                    name: "add1".to_string(),
+                    args: vec![Node::Identifier("y".to_string())],
+                }))],
+            },
+            Node::Show(Box::new(Node::Call {
+                name: "wrapper".to_string(),
+                args: vec![Node::NumberLit(10.0)],
+            })),
+        ]);
+        let result = run_program(program);
+        assert!(result.is_ok());
+    }
+
     // ---- List Tests ----
 
     #[test]
@@ -1932,6 +2020,102 @@ pos: None,
                 crate::ast::InterpPart::Var("name".to_string()),
                 crate::ast::InterpPart::Lit(", Age: ".to_string()),
                 crate::ast::InterpPart::Var("age".to_string()),
+            ]))),
+        ]);
+        let result = run_program(program);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_string_interpolation_dict_field_access() {
+        let program = Node::Program(vec![
+            Node::Set {
+                name: "person".to_string(),
+                value: Box::new(Node::DictLiteral(vec![
+                    ("name".to_string(), Node::StringLit("Alice".to_string())),
+                    ("age".to_string(), Node::NumberLit(30.0)),
+                ])),
+                pos: None,
+            },
+            Node::Show(Box::new(Node::InterpolatedString(vec![
+                crate::ast::InterpPart::Lit("Name is ".to_string()),
+                crate::ast::InterpPart::Var("person.name".to_string()),
+                crate::ast::InterpPart::Lit(" and age is ".to_string()),
+                crate::ast::InterpPart::Var("person.age".to_string()),
+            ]))),
+        ]);
+        let result = run_program(program);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_string_interpolation_nested_dict_field_access() {
+        let program = Node::Program(vec![
+            Node::Set {
+                name: "person".to_string(),
+                value: Box::new(Node::DictLiteral(vec![
+                    (
+                        "address".to_string(),
+                        Node::DictLiteral(vec![
+                            ("city".to_string(), Node::StringLit("Wonderland".to_string())),
+                            ("zip".to_string(), Node::StringLit("12345".to_string())),
+                        ]),
+                    ),
+                    ("name".to_string(), Node::StringLit("Bob".to_string())),
+                ])),
+                pos: None,
+            },
+            Node::Show(Box::new(Node::InterpolatedString(vec![
+                crate::ast::InterpPart::Lit("Name: ".to_string()),
+                crate::ast::InterpPart::Var("person.name".to_string()),
+                crate::ast::InterpPart::Lit(", City: ".to_string()),
+                crate::ast::InterpPart::Var("person.address.city".to_string()),
+            ]))),
+        ]);
+        let result = run_program(program);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_string_interpolation_dict_field_missing() {
+        let program = Node::Program(vec![
+            Node::Set {
+                name: "person".to_string(),
+                value: Box::new(Node::DictLiteral(vec![
+                    ("name".to_string(), Node::StringLit("Alice".to_string())),
+                ])),
+                pos: None,
+            },
+            Node::Show(Box::new(Node::InterpolatedString(vec![
+                crate::ast::InterpPart::Lit("Age: ".to_string()),
+                crate::ast::InterpPart::Var("person.age".to_string()),
+            ]))),
+        ]);
+        let result = run_program(program);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_string_interpolation_mixed_simple_and_field_access() {
+        let program = Node::Program(vec![
+            Node::Set {
+                name: "greeting".to_string(),
+                value: Box::new(Node::StringLit("Hello".to_string())),
+                pos: None,
+            },
+            Node::Set {
+                name: "person".to_string(),
+                value: Box::new(Node::DictLiteral(vec![
+                    ("name".to_string(), Node::StringLit("Charlie".to_string())),
+                ])),
+                pos: None,
+            },
+            Node::Show(Box::new(Node::InterpolatedString(vec![
+                crate::ast::InterpPart::Lit("".to_string()),
+                crate::ast::InterpPart::Var("greeting".to_string()),
+                crate::ast::InterpPart::Lit(", ".to_string()),
+                crate::ast::InterpPart::Var("person.name".to_string()),
+                crate::ast::InterpPart::Lit("!".to_string()),
             ]))),
         ]);
         let result = run_program(program);
