@@ -1,0 +1,111 @@
+// Advanced Demo: Contact Book
+// Combines dictionaries, file I/O, error handling, ranges and functions.
+
+// Helper Functions
+
+define format_contact with person
+    return "{person.name}, age {person.age}, from {person.city}"
+end
+
+define count_contacts with contacts_list
+    return count of contacts_list
+end
+
+// Main Program
+
+show "Contact Book"
+show "================"
+
+// Create some contacts as dictionaries
+set alice to { name: "Alice", age: 30, city: "New York" }
+set bob to { name: "Bob", age: 25, city: "London" }
+set charlie to { name: "Charlie", age: 35, city: "Tokyo" }
+
+// Store contacts in a list
+set contacts to list alice, bob, charlie
+set contact_count to count_contacts with contacts
+show "Loaded {contact_count} contacts."
+
+// Display all contacts
+show ""
+show "--- All Contacts ---"
+set cur to first of contacts
+show format_contact with cur
+
+set last_contact to last of contacts
+show "Last contact: " add last_contact.name
+
+// Save contacts to file
+try
+    set save_data to "Contact Book Database with {contact_count} contacts"
+    write "contacts_db.txt" content save_data
+    show ""
+    show "Contacts saved to contacts_db.txt"
+catch error
+    show "Error saving contacts: {error}"
+end
+
+// Read back from file
+try
+    read "contacts_db.txt" into saved_data
+    show "Read back from file: {saved_data}"
+catch error
+    show "Error reading file: {error}"
+end
+
+// Add more contacts
+set diana to { name: "Diana", age: 28, city: "Paris" }
+push diana to contacts
+
+set eve to { name: "Eve", age: 22, city: "Berlin" }
+push eve to contacts
+
+set new_count to count_contacts with contacts
+show ""
+show "Added Diana and Eve. Total contacts: {new_count}"
+
+// Demonstrate dictionary field access
+show ""
+show "--- Contact Details ---"
+show "Alice city: " add alice.city
+show "Bob age: " add bob.age
+show "Diana name: " add diana.name
+
+// List operations
+show ""
+show "--- List Operations ---"
+set names to list "Alice", "Bob", "Charlie"
+show "Names list has " add length of names add " entries"
+push "Diana" to names
+push "Eve" to names
+show "After adding: " add count of names add " names"
+
+set sorted_names to sort of names
+show "First alphabetically: " add first of sorted_names
+show "Last alphabetically: " add last of sorted_names
+
+// Range loop demo
+show ""
+show "--- Numbered Contacts ---"
+repeat from 1 to new_count as n {
+    show "Contact number " add n
+}
+
+// Error handling demo
+show ""
+show "--- Error Handling ---"
+try
+    delete "nonexistent_file.txt"
+catch error
+    show "Caught expected error: file not found"
+end
+
+try
+    delete "contacts_db.txt"
+catch error
+    show "Cleanup warning: {error}"
+end
+
+show ""
+show "Contact Book session complete."
+show "Total contacts managed: {new_count}"

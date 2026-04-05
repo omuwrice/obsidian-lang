@@ -1,0 +1,63 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Obsidian",
+  "scopeName": "source.obsidian",
+  "fileTypes": ["obs"],
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#operators"
+    },
+    {
+      "include": "#identifiers"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.obsidian",
+          "match": "//.*$"
+        }
+      ]
+    },
+    "strings": {
+      "name": "string.quoted.double.obsidian",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.obsidian",
+          "match": "\\\\."
+        }
+      ]
+    },
+    "numbers": {
+      "name": "constant.numeric.obsidian",
+      "match": "\\b\\d+(\\.\\d+)?\\b"
+    },
+    "keywords": {
+      "name": "keyword.control.obsidian",
+      "match": "\\b(?i)(set|to|is|as|show|display|print|ask|input|if|otherwise|else|then|end|repeat|times|while|until|stop|define|function|call|return|give|back|add|subtract|multiply|divide|by|from|create|delete|read|write|append|rename|copy|move|exists|not|and|or|list|empty|contains|count|length|at|index|push|pop|remove|text|number|truth|of|with|in|into|content|run|exit|clear|true|false|uppercase|lowercase|trim|reverse|replace|round|floor|ceiling|absolute|random|between|first|last|sort|wait|seconds|milliseconds|connect|fetch|send|request|open)\\b"
+    },
+    "operators": {
+      "name": "keyword.operator.obsidian",
+      "match": "(==|!=|<=|>=|<|>|\\+|-|\\*|/|=)"
+    },
+    "identifiers": {
+      "name": "variable.other.obsidian",
+      "match": "\\b[a-zA-Z_]\\w*\\b"
+    }
+  }
+}

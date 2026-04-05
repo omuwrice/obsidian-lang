@@ -1,0 +1,34 @@
+// String built-in functions demonstration
+
+// uppercase of x
+set greeting to "hello, world!"
+show uppercase of greeting
+
+// lowercase of x
+set shout to "HELLO, WORLD!"
+show lowercase of shout
+
+// length of x
+set message to "hello"
+show length of message
+
+// trim of x
+set padded to "   hello   "
+show trim of padded
+
+// reverse of x
+set word to "hello"
+show reverse of word
+
+// contains x in y (binary: container contains item)
+set text to "hello world"
+show text contains "world"
+show text contains "xyz"
+
+// replace x with y in z
+set sentence to "the cat sat on the mat"
+show replace "cat" with "dog" in sentence
+
+// Chaining built-ins
+set messy to "  HELLO  "
+show lowercase of trim of messy

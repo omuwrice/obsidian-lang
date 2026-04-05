@@ -1,0 +1,42 @@
+// Error Handling Demo
+// Use try/catch/end to gracefully handle runtime errors.
+
+// --- Catching file operation errors ---
+
+// Trying to delete a file that doesn't exist
+try
+    delete "nonexistent_file_xyz.txt"
+catch error
+    show "Caught error: {error}"
+end
+
+// --- Successful operations inside try ---
+
+try
+    create "test_error_file.txt"
+    write "test_error_file.txt" content "Hello from try block!"
+    read "test_error_file.txt" into content
+    show "Read from file: {content}"
+    delete "test_error_file.txt"
+catch error
+    show "Something went wrong: {error}"
+end
+
+// --- Type mismatch errors ---
+
+try
+    set x to "not a number"
+    set y to x add 5
+catch error
+    show "Caught: {error}"
+end
+
+// --- Undefined variable errors ---
+
+try
+    show undefined_variable
+catch error
+    show "Caught: {error}"
+end
+
+show "Program continued after handling all errors!"

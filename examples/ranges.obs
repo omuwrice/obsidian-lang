@@ -1,0 +1,74 @@
+// Range Loop Demo
+// Iterate over a range of numbers with repeat from X to Y as var.
+
+// Basic range loop
+
+show "Counting from 1 to 5:"
+repeat from 1 to 5 as i {
+    show i
+}
+
+// Range with default variable i
+
+show "Counting from 10 to 15:"
+repeat from 10 to 15 {
+    show i
+}
+
+// Range with computation
+
+show "Squares from 1 to 5:"
+repeat from 1 to 5 as n {
+    set sq to n multiply n
+    show "{n} squared is {sq}"
+}
+
+// Summing a range
+
+set sum to 0
+repeat from 1 to 10 as i {
+    set sum to sum add i
+}
+show "Sum of 1 to 10 is {sum}"
+
+// Multiplication table
+
+show "Multiplication table for 7:"
+repeat from 1 to 10 as i {
+    set result to 7 multiply i
+    show "7 x {i} = {result}"
+}
+
+// Break out of a range loop
+
+show "Finding first multiple of 7 above 50:"
+repeat from 1 to 100 as i {
+    set product to 7 multiply i
+    if product > 50 then
+        show "7 x {i} = {product}"
+        break
+    end
+}
+
+// FizzBuzz with range
+
+show "FizzBuzz (1 to 15):"
+repeat from 1 to 15 as n {
+    set c3 to n divide 3
+    set c5 to n divide 5
+    set r3 to n subtract c3 multiply 3
+    set r5 to n subtract c5 multiply 5
+    if r3 is 0 and r5 is 0 then
+        show "FizzBuzz"
+    otherwise
+        if r3 is 0 then
+            show "Fizz"
+        otherwise
+            if r5 is 0 then
+                show "Buzz"
+            otherwise
+                show n
+            end
+        end
+    end
+}

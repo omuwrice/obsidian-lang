@@ -1,0 +1,33 @@
+// Math built-in functions demonstration
+
+// round x
+set pi to 3.14159
+show round pi
+
+// floor x
+show floor pi
+
+// ceiling x
+show ceiling pi
+
+// absolute of x
+set negative to 0 subtract 42
+show absolute of negative
+
+// random between x and y
+show random between 1 and 10
+show random between 1 and 100
+
+// Type conversion: x as text
+set num to 42
+show num as text
+
+// Type conversion: x as number
+set str to "3.14"
+show str as number
+
+// Type conversion: x as truth
+set zero to 0
+show zero as truth
+set one to 1
+show one as truth

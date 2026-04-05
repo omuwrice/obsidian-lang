@@ -1,0 +1,24 @@
+test "addition works"
+  set x to 2
+  set y to 3
+  set result to x add y
+  expect result is 5
+end
+
+test "multiplication works"
+  set a to 4
+  set b to 5
+  set result to a multiply b
+  expect result is 20
+end
+
+test "string length"
+  set s to "hello"
+  set len to length of s
+  expect len is 5
+end
+
+test "string comparison"
+  set name to "world"
+  expect name is "world"
+end

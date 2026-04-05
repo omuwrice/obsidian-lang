@@ -1,0 +1,34 @@
+{
+  "name": "obsidian-lang",
+  "displayName": "Obsidian Language",
+  "description": "Syntax highlighting for the Obsidian programming language",
+  "version": "0.1.0",
+  "publisher": "obsidian-lang",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "obsidian",
+        "aliases": [
+          "Obsidian",
+          "obsidian"
+        ],
+        "extensions": [
+          ".obs"
+        ]
+      }
+    ],
+    "grammars": [
+      {
+        "language": "obsidian",
+        "scopeName": "source.obsidian",
+        "path": "./syntaxes/obsidian.tmLanguage.json"
+      }
+    ]
+  }
+}

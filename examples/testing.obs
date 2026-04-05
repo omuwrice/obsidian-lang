@@ -1,0 +1,72 @@
+// Testing Demo
+// Use "test" blocks and "expect" assertions to write tests.
+// Run with: obsidian test examples/testing.obs
+
+test "basic arithmetic"
+    set x to 10
+    set y to 20
+    set result to x add y
+    expect result is 30
+end
+
+test "string operations"
+    set greeting to "hello world"
+    set upper to uppercase of greeting
+    expect upper is "HELLO WORLD"
+end
+
+test "string length"
+    set word to "Obsidian"
+    set len to length of word
+    expect len is 8
+end
+
+test "list operations"
+    set items to list 3, 1, 4, 1, 5
+    set sorted to sort of items
+    set first_item to first of sorted
+    expect first_item is 1
+end
+
+test "list count"
+    set items to list "a", "b", "c", "d"
+    set len to count of items
+    expect len is 4
+end
+
+test "boolean logic"
+    set x to true
+    set y to false
+    expect x is true
+end
+
+test "dictionary access"
+    set person to { name: "Alice", age: 30 }
+    expect person.name is "Alice"
+end
+
+test "type conversion"
+    set num to 42
+    set txt to num as text
+    expect txt is "42"
+end
+
+test "range loop sum"
+    set total to 0
+    repeat from 1 to 10 as i {
+        set total to total add i
+    }
+    expect total is 55
+end
+
+test "string interpolation"
+    set name to "Bob"
+    set msg to "Hello, {name}!"
+    expect msg is "Hello, Bob!"
+end
+
+test "comparison operators"
+    set a to 10
+    set b to 5
+    expect a is 10
+end

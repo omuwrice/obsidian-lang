@@ -1,0 +1,28 @@
+set i to 0
+set c3 to 0
+set c5 to 0
+set c15 to 0
+repeat 15 times {
+    set i to i add 1
+    set c3 to c3 add 1
+    set c5 to c5 add 1
+    set c15 to c15 add 1
+    if c15 is 15 then
+        show "FizzBuzz"
+        set c15 to 0
+        set c3 to 0
+        set c5 to 0
+    otherwise
+        if c3 is 3 then
+            show "Fizz"
+            set c3 to 0
+        otherwise
+            if c5 is 5 then
+                show "Buzz"
+                set c5 to 0
+            otherwise
+                show i
+            end
+        end
+    end
+}

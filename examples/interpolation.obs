@@ -1,0 +1,28 @@
+// String Interpolation Demo
+// Embed variables inside strings using curly-brace var name syntax.
+
+set name to "Alice"
+set age to 30
+set city to "Wonderland"
+
+// Simple variable interpolation
+show "Hello, my name is {name}."
+
+// Multiple variables in one string
+show "I am {name} and I am {age} years old."
+
+// Interpolation with expressions
+set score to 95
+show "{name} scored {score} points in {city}."
+
+// Interpolation mixed with literal text
+set item to "apple"
+set qty to 3
+set price to 2
+show "You bought {qty} {item}(s) at ${price} each."
+set total to qty multiply price
+show "Total cost: ${total}"
+
+// Interpolation in stored strings
+set message to "Welcome back, {name}! You have {age} candles on your cake."
+show message

@@ -1,0 +1,4 @@
+ask "Enter first number: " into a
+ask "Enter second number: " into b
+set result to a add b
+show "The sum is: " + result

@@ -1,0 +1,9 @@
+create "todo.txt"
+set task to ""
+while task is not "" do
+    ask "Enter a task (or empty to quit): " into task
+    if task is not "" then
+        append "todo.txt" content task + "\n"
+    end
+end
+show "Your todo list has been saved!"

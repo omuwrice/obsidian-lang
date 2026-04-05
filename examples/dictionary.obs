@@ -1,0 +1,34 @@
+// Dictionary Demo
+// Use braces to create key-value data structures.
+
+// Creating dictionaries
+
+set person to { name: "Alice", age: 30, city: "Wonderland" }
+
+// Accessing dictionary fields
+
+show "Name: " add person.name
+show "Age: " add person.age
+show "City: " add person.city
+
+// Nested dictionaries
+
+set ceo_name to "Bob"
+set company to { name: "Acme Corp", ceo: ceo_name, employees: 100 }
+
+show "Company: " add company.name
+show "CEO: " add company.ceo
+show "Employees: " add company.employees
+
+// Dictionary in a list
+
+set contacts to list { name: "Alice", phone: "555-0101" }, { name: "Bob", phone: "555-0202" }
+
+set top to first of contacts
+show "First contact: " add top.name add " - " add top.phone
+
+// Using dictionary values in expressions
+
+set product to { price: 25, quantity: 4 }
+set total to product.price multiply product.quantity
+show "Total: $" add total
